@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { FormError } from "@/components/ui/FormError";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import { SlowRequestNotice } from "@/components/ui/SlowRequestNotice";
 import { useLogin } from "@/hooks/useAuth";
 import { ApiError } from "@/lib/api";
 import { compactErrors, validateEmail, validateRequired } from "@/lib/validation";
@@ -56,30 +57,33 @@ export default function LoginPage() {
       <h1 className="text-2xl font-semibold">Log in</h1>
       <p className="mt-1 text-sm text-text-secondary">Welcome back. Log in to manage your tasks.</p>
 
-      <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-4">
-        <FormError message={formError} />
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          autoComplete="email"
-          value={values.email}
-          onChange={(event) => update("email", event.target.value)}
-          error={errors.email}
-          required
-        />
-        <PasswordInput
-          label="Password"
-          name="password"
-          autoComplete="current-password"
-          value={values.password}
-          onChange={(event) => update("password", event.target.value)}
-          error={errors.password}
-          required
-        />
-        <Button type="submit" loading={login.isPending} className="mt-2 w-full">
-          Log in
-        </Button>
+      <form onSubmit={onSubmit} noValidate className="mt-6">
+        <fieldset disabled={login.isPending} className="grid min-w-0 gap-4">
+          <FormError message={formError} />
+          {login.isPending && <SlowRequestNotice />}
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            autoComplete="email"
+            value={values.email}
+            onChange={(event) => update("email", event.target.value)}
+            error={errors.email}
+            required
+          />
+          <PasswordInput
+            label="Password"
+            name="password"
+            autoComplete="current-password"
+            value={values.password}
+            onChange={(event) => update("password", event.target.value)}
+            error={errors.password}
+            required
+          />
+          <Button type="submit" loading={login.isPending} className="mt-2 w-full">
+            {login.isPending ? "Logging in…" : "Log in"}
+          </Button>
+        </fieldset>
       </form>
 
       <p className="mt-6 text-center text-sm text-text-secondary">
